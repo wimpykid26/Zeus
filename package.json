@@ -1,0 +1,31 @@
+{
+  "name": "zeus",
+  "version": "1.0.0",
+  "description": "WebApp that recommends Articles and Audio",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wimpykid26/Zeus.git"
+  },
+  "keywords": [
+    "zeus"
+  ],
+  "author": "Dwaipayan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wimpykid26/Zeus/issues"
+  },
+  "homepage": "https://github.com/wimpykid26/Zeus#readme",
+  "dependencies": {
+    "babel-core": "^6.17.0",
+    "babel-loader": "^6.2.5",
+    "babel-preset-es2015": "^6.16.0",
+    "babel-preset-react": "^6.16.0",
+    "react": "^15.3.2",
+    "react-dom": "^15.3.2",
+    "webpack": "^1.13.2"
+  }
+}
