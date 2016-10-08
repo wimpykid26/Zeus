@@ -1,10 +1,10 @@
-import React from 'react';
-import {render} from 'react-dom';
+var React = require('react');
+var ReactDOM = require('react-dom')
 
-class App extends React.Component {
-  render () {
-    return <p> Hello Kaise Ho!</p>;
-  }
-}
+var TodoApp = require('./components/TodoApp.react');
 
-render(<App/>, document.getElementById('app'));
+ReactDOM.render(
+  <TodoApp />,
+  document.getElementById('app')
+);
+

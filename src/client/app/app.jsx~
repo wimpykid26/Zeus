@@ -1,0 +1,44 @@
+import React from 'react';
+import {render} from 'react-dom';
+var TodoStore = require('stores/TodoStore');
+
+function getTodoState() {
+  return {
+    allTodos: TodoStore.getAll()
+  };
+}
+
+var TodoApp = React.createClass({
+
+  getInitialState: function() {
+    return getTodoState();
+  },
+
+  componentDidMount: function() {
+    TodoStore.addChangeListener(this._onChange);
+  },
+
+  componentWillUnmount: function() {
+    TodoStore.removeChangeListener(this._onChange);
+  },
+
+  /**
+   * @return {object}
+   */
+  render: function() {
+    return (
+      <div>
+          <p>Oye bc</p>
+          allTodos={this.state.allTodos}
+          areAllComplete={this.state.areAllComplete}
+      </div>
+    );
+  },
+
+  _onChange: function() {
+    this.setState(getTodoState());
+  }
+
+});
+
+module.exports = TodoApp;
