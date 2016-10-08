@@ -1,8 +1,8 @@
 #How To Install
 
 #Install node : 
-apt-get update
-apt-get install npm
+sudo apt-get update <br/>
+sudo apt-get install npm <br/>
 
 #Install webpack :
 npm i webpack -S
