@@ -1,12 +1,16 @@
-from gensim import corpora, models, similarities
+from gensim import corpora
+from gensim import models
+from gensim import similarities
 from collections import defaultdict
-from pprint import pprint
+import pprint
+
 import os
+
 class MyCorpus(object):
 	"""docstring for MyCorpus"""
 	def main(self):
 		list2 = ['']
-		directory = '/home/dwaipayan/Zeus/samples'
+		directory = '/home/dwaipayan/Zeus/recommender/samples'
 		for filename in os.listdir(directory):
 			if filename.endswith(".txt"):
 				f = open(os.path.join(directory, filename),'r')

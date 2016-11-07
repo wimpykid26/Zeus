@@ -1,0 +1,5 @@
+[
+    {"heading": "Article1", "text": "This is one article"},
+    {"heading": "Article2", "text": "This is *another* article"},
+    {"heading": "Article3", "text": "This is *another* article"}
+]
