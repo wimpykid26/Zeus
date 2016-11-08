@@ -61,8 +61,8 @@
 	
 	var React = __webpack_require__(/*! react */ 2);
 	var ReactDOM = __webpack_require__(/*! react-dom */ 35);
+	
 	var converter = new Showdown.converter();
-	var data = [{ heading: "Article1", text: "This is one article" }, { heading: "Article2", text: "This is *another* article" }, { heading: "Article3", text: "This is *another* article" }];
 	var ArticleBox = React.createClass({
 	    displayName: 'ArticleBox',
 	    loadArticlesFromServer: function loadArticlesFromServer() {
@@ -77,6 +77,23 @@
 	            }.bind(this)
 	        });
 	    },
+	
+	    handleContentSubmit: function handleContentSubmit(comment) {
+	        console.log(comment);
+	        $.ajax({
+	            url: this.props.url,
+	            dataType: 'json',
+	            type: 'POST',
+	            data: comment,
+	            success: function (data) {
+	                this.setState({ data: data });
+	            }.bind(this),
+	            error: function (xhr, status, err) {
+	                console.error(this.props.url, status, err.toString());
+	            }.bind(this)
+	        });
+	    },
+	
 	    getInitialState: function getInitialState() {
 	        return { data: [] };
 	    },
@@ -85,12 +102,20 @@
 	        setInterval(this.loadArticlesFromServer, this.props.pollInterval);
 	    },
 	    render: function render() {
-	        return React.createElement(ArticleList, { data: this.state.data });
+	        return React.createElement(ArticleList, { data: this.state.data, url: this.props.url, onContentChanged: this.handleContentSubmit });
 	    }
 	});
 	
 	var Article = React.createClass({
 	    displayName: 'Article',
+	    handleSubmit: function handleSubmit(e) {
+	        e.preventDefault();
+	        var upvotes = this.props.upvotes + 1;
+	        var downvotes = this.props.downvotes + 1;
+	        this.props.onContentSubmit({ id: this.props.heading.slice(-1), upvotes: upvotes, downvotes: downvotes });
+	        console.log(upvotes);
+	        return;
+	    },
 	    render: function render() {
 	        var rawMarkup = converter.makeHtml(this.props.heading.toString());
 	        return React.createElement(
@@ -120,11 +145,23 @@
 	                ),
 	                React.createElement(
 	                    'div',
-	                    { className: 'mdl-card__actions' },
+	                    { className: 'mdl-card__actions', onClick: this.handleSubmit },
 	                    React.createElement(
 	                        'a',
 	                        { href: '#', className: 'mdl-button' },
-	                        'Read our features'
+	                        'Read whole Article'
+	                    ),
+	                    React.createElement(
+	                        'a',
+	                        { href: '#', className: 'mdl-button', ref: 'upvote' },
+	                        'Upvote:',
+	                        this.props.upvotes
+	                    ),
+	                    React.createElement(
+	                        'a',
+	                        { href: '#', className: 'mdl-button', ref: 'downvote' },
+	                        'Downvote:',
+	                        this.props.downvotes
 	                    )
 	                )
 	            ),
@@ -162,10 +199,13 @@
 	
 	var ArticleList = React.createClass({
 	    displayName: 'ArticleList',
+	    callMaster: function callMaster(comment) {
+	        this.props.onContentChanged(comment);
+	    },
 	    render: function render() {
 	        var commentNodes = this.props.data.map(function (comment) {
-	            return React.createElement(Article, { heading: comment.heading, text: comment.text });
-	        });
+	            return React.createElement(Article, { heading: comment.heading, text: comment.text, upvotes: comment.upvotes, downvotes: comment.downvotes, onContentSubmit: this.callMaster });
+	        }, this);
 	        return React.createElement(
 	            'div',
 	            null,
@@ -187,7 +227,7 @@
 	                React.createElement(
 	                    'h3',
 	                    null,
-	                    'Name & Title'
+	                    'Recommendation Portal'
 	                )
 	            ),
 	            React.createElement('div', { className: 'mdl-layout--large-screen-only mdl-layout__header-row' }),
@@ -197,17 +237,17 @@
 	                React.createElement(
 	                    'a',
 	                    { href: '#overview', className: 'mdl-layout__tab is-active' },
-	                    'Overview'
+	                    'Home'
 	                ),
 	                React.createElement(
 	                    'a',
 	                    { href: '#features', className: 'mdl-layout__tab' },
-	                    'Features'
+	                    'Trending'
 	                ),
 	                React.createElement(
 	                    'a',
 	                    { href: '#features', className: 'mdl-layout__tab' },
-	                    'Details'
+	                    'Sports'
 	                ),
 	                React.createElement(
 	                    'a',
@@ -217,7 +257,7 @@
 	                React.createElement(
 	                    'a',
 	                    { href: '#features', className: 'mdl-layout__tab' },
-	                    'FAQ'
+	                    'Entertainment'
 	                ),
 	                React.createElement(
 	                    'button',
@@ -304,7 +344,7 @@
 	            React.createElement(
 	                'div',
 	                { className: 'mdl-layout__tab-panel is-active', id: 'overview' },
-	                React.createElement(ArticleBox, { data: this.props.data, url: this.props.url, pollInterval: '2000' }),
+	                React.createElement(ArticleBox, { url: this.props.url, pollInterval: '2000' }),
 	                '                '
 	            ),
 	            React.createElement(
@@ -445,7 +485,7 @@
 	            'div',
 	            { className: 'mdl-layout mdl-js-layout mdl-layout--fixed-header' },
 	            React.createElement(Header, null),
-	            React.createElement(MainComponent, { data: data, url: 'comments.json' })
+	            React.createElement(MainComponent, { url: 'comments.json' })
 	        );
 	    }
 	});

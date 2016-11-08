@@ -1,5 +1,23 @@
 [
-    {"heading": "Article1", "text": "This is one article"},
-    {"heading": "Article2", "text": "This is *another* article"},
-    {"heading": "Article3", "text": "This is *another* article"}
+    {
+        "id":1,
+        "heading": "Article1",
+        "text": "This is one article",
+        "upvotes": 1,
+        "downvotes": 3
+    },
+    {
+        "id":2,
+        "heading": "Article2",
+        "text": "This is *another* article",
+        "upvotes": 1,
+        "downvotes": 3
+    },
+    {
+        "id":3,
+        "heading": "Article3",
+        "text": "This is *another* article",
+        "upvotes": 1,
+        "downvotes": 3
+    }
 ]
