@@ -18,9 +18,9 @@ var ArticleBox = React.createClass({
     handleContentSubmit:function(comment) {
         console.log(comment)
         $.ajax({
-            url: this.props.url,
+            url: this.props.url2,
             dataType: 'json',
-            type: 'POST',
+            type: 'PUT',
             data: comment,
             success: function(data) {
                 this.setState({data: data});
@@ -48,14 +48,20 @@ var ArticleBox = React.createClass({
 });
 
 var Article = React.createClass({
-    handleSubmit(e) {
+    handleUpvote(e) {
         e.preventDefault();
         var upvotes=this.props.upvotes +1;
+        var downvotes=this.props.downvotes;
+        this.props.onContentSubmit({id:this.props.heading.slice(-1), upvotes: upvotes, downvotes: downvotes});
+        return;
+    },
+
+    handleDownvote(e) {
+        e.preventDefault();
+        var upvotes=this.props.upvotes;
         var downvotes=this.props.downvotes +1;
         this.props.onContentSubmit({id:this.props.heading.slice(-1), upvotes: upvotes, downvotes: downvotes});
-        console.log(upvotes);
         return;
-
     },
 
     render() {
@@ -70,10 +76,10 @@ var Article = React.createClass({
                         <h4>{this.props.heading}</h4>
                         {this.props.text}
                     </div>
-                    <div className="mdl-card__actions" onClick={this.handleSubmit}>
+                    <div className="mdl-card__actions" >
                         <a href="#" className="mdl-button">Read whole Article</a>
-                        <a href="#" className="mdl-button" ref="upvote">Upvote:{this.props.upvotes}</a>
-                        <a href="#" className="mdl-button" ref="downvote">Downvote:{this.props.downvotes}</a>
+                        <a href="#" className="mdl-button" onClick={this.handleUpvote} ref="upvote">Upvote:{this.props.upvotes}</a>
+                        <a href="#" className="mdl-button" onClick={this.handleDownvote}ref="downvote">Downvote:{this.props.downvotes}</a>
                     </div>
                 </div>
                 <button className="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon" id="btn1">
@@ -204,7 +210,7 @@ var MainComponent = React.createClass({
         return (
             <main className="mdl-layout__content">
                 <div className="mdl-layout__tab-panel is-active" id="overview">
-                    <ArticleBox url={this.props.url} pollInterval="2000"/>
+                    <ArticleBox url={this.props.url} url2={this.props.url2} pollInterval="2000"/>
                     {/*<section className="section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp">
                         <div className="mdl-card mdl-cell mdl-cell--12-col">
                             <div className="mdl-card__supporting-text mdl-grid mdl-grid--no-spacing">
@@ -345,7 +351,7 @@ var Main = React.createClass({
         return (
             <div className="mdl-layout mdl-js-layout mdl-layout--fixed-header">
                 <Header/>
-                <MainComponent url="comments.json"/>
+                <MainComponent url="comments.json" url2="edit"/>
             </div>
 
     );

@@ -8,7 +8,8 @@ var APP_DIR = path.resolve(__dirname, 'src/client/app');
 
 var config = {
   entry: {
-    main : [APP_DIR + '/main.jsx']
+    main : [APP_DIR + '/main.jsx'],
+    individual : [APP_DIR + '/individual.jsx']
   },
 
   output: {
