@@ -4,7 +4,7 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var app = express();
 var jsonfile = require('jsonfile')
-var COMMENTS_FILE = path.join(__dirname, 'comments.json');
+var COMMENTS_FILE = path.join(__dirname, '/json/national.json');
 console.log(__dirname)
 app.set('port', (process.env.PORT || 3000));
 
@@ -19,7 +19,7 @@ app.use(function(req, res, next) {
     next();
 });
 
-app.get('/comments.json', function(req, res) {
+app.get('/json/national.json', function(req, res) {
   fs.readFile(COMMENTS_FILE, function(err, data) {
     if (err) {
       console.error(err);
@@ -29,7 +29,7 @@ app.get('/comments.json', function(req, res) {
   });
 });
 
-app.post('/comments.json', function(req, res) {
+app.post('/json/national.json', function(req, res) {
   console.log('insidepost');
   fs.readFile(COMMENTS_FILE, function(err, data) {
     if (err) {

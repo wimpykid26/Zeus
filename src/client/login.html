@@ -5,22 +5,23 @@
   <h1>Recommendation Portal</h1>
   <h3>User Login</h3>
 </hgroup>
-<form>
+<form action = "http://localhost:5000/login" method = "POST">
   <div class="group">
-    <input type="text"><span class="highlight"></span><span class="bar"></span>
+    <input type="text" name = "username" ><span class="highlight"></span><span class="bar"></span>
     <label>Username</label>
   </div>
   <div class="group">
-    <input type="email"><span class="highlight"></span><span class="bar"></span>
+    <input type="text" name = "password" ><span class="highlight"></span><span class="bar"></span>
     <label>Password</label>
   </div>
-  <button type="button" class="button buttonBlue">Login
+  <button type="submit" class="button buttonBlue" >Login
     <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
   </button>
-  <a type="button" class="button buttonBlue" href="localhost:3000/signup.html">No Account? Signup!
+  </form>
+  <button class="button buttonBlue" onclick="window.location.href='http://localhost:3000/signup.html'">No Account? Signup!
     <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
-  </a>
-</form>
+  </button> 
+
 <footer><a href="http://www.polymer-project.org/" target="_blank"><img src="https://www.polymer-project.org/images/logos/p-logo.svg"></a>
   <p>Personalized Recommendation powered by <a href="http://www.polymer-project.org/" target="_blank">Gensim</a></p>
 </footer>

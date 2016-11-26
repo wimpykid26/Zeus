@@ -12,7 +12,7 @@ class MyCorpus(object):
 
     def main(self):
         list2 = ['']
-        directory = '/home/dwaipayan/Zeus/recommender/samples'
+        directory = '/home/mera_naam_dwaipayan/Dwaipayan/Zeus/recommender/samples'
         for filename in os.listdir(directory):
             if filename.endswith(".txt"):
                 f = open(os.path.join(directory, filename), 'r')
