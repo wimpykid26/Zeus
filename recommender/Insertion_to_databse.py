@@ -2,19 +2,22 @@ import os
 from pymongo import MongoClient
 from file_count import file_count
 client = MongoClient()
-db = client.temp
+db = client.mydb
 content = db.content
 similar_to = []
 
 
-def insertion(category, url, final_article4):
+def insertion(category, url, final_article4, str_article_title, image_url):
     temp_2 = duplicate_checker(url)
     if temp_2 == 1:
         print ("Article already exists in database")
     else:
-        path = text_file_creation(category, final_article4)
+        path, art_id = text_file_creation(category, final_article4)
         post = {"category": category,
                 "url": url,
+                "article_id": art_id,
+                "title": str_article_title,
+                "image_url": image_url,
                 "path": path}
         content.insert_one(post)
 
@@ -38,8 +41,8 @@ def text_file_creation(category, final_article):
         name += 1
 
     temp = str(name)
-    f = open('/home/mera_naam_dwaipayan/Dwaipayan/Zeus/recommender/samples/zeus/' + category+ '/' + temp + '.txt', 'w')
-    path_temp = '/home/mera_naam_dwaipayan/Dwaipayan/Zeus/recommender/samples/zeus/' + category+ '/' + temp + '.txt'
+    f = open('/home/mera_naam_dwaipayan/Dwaipayan/Zeus/recommender/samples/zeus/' + category + '/' + temp + '.txt', 'w')
+    path_temp = '/home/mera_naam_dwaipayan/Dwaipayan/Zeus/recommender/samples/zeus/' + category + '/' + temp + '.txt'
     f.write(final_article)
     f.close()
-    return path_temp
+    return path_temp, temp
