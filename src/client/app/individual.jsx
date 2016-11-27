@@ -45,6 +45,28 @@ var ContentCard = React.createClass({
 }
 );
 var SimpleSlider = React.createClass({
+  loadSimilarFromServer() {
+    console.log(this.props.urlSimilarity)
+    $.ajax({
+      url: this.props.urlSimilarity,
+      dataType: 'text',
+      data: {article_id:2, category:'national'},
+      success: function(incomingData) {
+        console.log(incomingData);
+        this.setState({data:(incomingData)});
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.error(this.props.url, status, err.toString());
+      }.bind(this)
+    });
+  },
+  getInitialState() {
+    return {data:[]};
+  },
+  componentDidMount() {
+    this.loadSimilarFromServer();
+    setInterval(this.loadSimilarFromServer, this.props.pollInterval);
+  },
   render: function () {
     var settings = {
       dots: true,
@@ -57,7 +79,8 @@ var SimpleSlider = React.createClass({
     return (
 
       <Slider {...settings}>
-      <div className="screenshot-item">
+
+      <div className="screenshot-item">{this.state.data}
       <a href="img/screenshots/ss1.png" data-featherlight="image">
       <img src="img/screenshots/ss1.png"/>
       <div className="screenshot-item-description"></div>
@@ -188,7 +211,7 @@ var Main = React.createClass({
       </div>
       <ContentCard/>
       <RecommendCard url="Other Recommendations"/>
-      <SimpleSlider/>
+      <SimpleSlider urlSimilarity="http://localhost:5000/get_similar" pollInterval="2000"/>
       <RecommendCard url="People Also Liked"/>
       <SimpleSlider/>
       <DetailCard/>
