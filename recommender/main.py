@@ -17,7 +17,7 @@ for i in content.find():
         category.append(categ)
 
 print (category)
-#crawl(links, category)
-for w in range(0, len(category)-1):
-        print(category[w])
-        similarity_list(category[w])
+crawl(links, category)
+# for w in range(0, len(category)-1):
+#         print(category[w])
+#         similarity_list(category[w])

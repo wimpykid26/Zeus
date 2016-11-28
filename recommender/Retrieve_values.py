@@ -6,10 +6,10 @@ import json
 links=[]
 category=[]
 client=MongoClient()
-db=client.temp
+db=client.mydb
 content=db.content
 id = 0
-for i in content.find({"category":"health"}):
+for i in content.find({"category":"entertainment"}):
 	f = open('/home/mera_naam_dwaipayan/Dwaipayan/Zeus/src/client/json/' + 'national.json', 'a')
 	print(i)
 	i['id'] = id
@@ -19,4 +19,4 @@ for i in content.find({"category":"health"}):
 	del i['_id']
 	json.dump(i, f)
 	#f.write(str(i))
-f.close()
+	f.close()
