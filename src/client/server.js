@@ -14,9 +14,9 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 // Additional middleware which will set headers that we need on each request.
 app.use(function(req, res, next) {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Cache-Control', 'no-cache');
-    next();
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Cache-Control', 'no-cache');
+  next();
 });
 
 app.get('/json/national.json', function(req, res) {
@@ -55,24 +55,49 @@ app.post('/json/national.json', function(req, res) {
 });
 
 app.put('/edit', function(req, res) {
-    var id = req.body.id;
-    var newUpvotes = req.body.upvotes;
-    var newDownvotes = req.body.downvotes;
-    // read in the JSON file
-    jsonfile.readFile(COMMENTS_FILE, function(err, obj) {
-        // Using another variable to prevent confusion.
-        var fileObj = obj;
-        console.log(fileObj);
-        // Modify the text at the appropriate id
-        fileObj[id-1].upvotes = parseInt(newUpvotes);
-        fileObj[id-1].downvotes = parseInt(newDownvotes);
-        // Write the modified obj to the file
-        jsonfile.writeFile(COMMENTS_FILE, fileObj, function(err) {
-            if (err) throw err;
-        });
+  var id = req.body.id;
+  var newUpvotes = req.body.upvotes;
+  var newDownvotes = req.body.downvotes;
+  // read in the JSON file
+  jsonfile.readFile(COMMENTS_FILE, function(err, obj) {
+    // Using another variable to prevent confusion.
+    var fileObj = obj;
+    console.log(fileObj);
+    // Modify the text at the appropriate id
+    fileObj[id-1].upvotes = parseInt(newUpvotes);
+    fileObj[id-1].downvotes = parseInt(newDownvotes);
+    // Write the modified obj to the file
+    jsonfile.writeFile(COMMENTS_FILE, fileObj, function(err) {
+      if (err) throw err;
     });
+  });
 });
 
+app.put('/retrieve', function(req, res) {
+  console.log(req.body);
+  JSON.stringify(req.body);
+  var similarString = "";
+  for (var p in req.body){
+    for(var l = 0;l < p.length;l++){
+      if (p.charAt(l) != null && p.charAt(l)!=',' && p.charAt(l) != ' '){
+        if(p.charAt(l)=='\n')
+        similarString+=" ";
+        else
+        similarString+=p.charAt(l);
+      }
+    }
+  }
+  var array = similarString.split(' ').map(Number);
+  var contentArray = [];
+  var j = 0;
+  jsonfile.readFile(COMMENTS_FILE, function(err, obj) {
+    var fileObj = obj;
+    for (i = 1;i < array.length; i++){
+      contentArray[j++] = fileObj[array[i-1]].path.toString();
+    }
+    res.json(contentArray);
+  });
+});
 port=3000
 app.listen(port);
 console.log('listening at port no'+port);

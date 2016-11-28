@@ -43,12 +43,10 @@ def login():
 	user = ""
 	loginpassword = ""
 	if request.method == 'POST':
-
 		user = request.form['username']
 		password = request.form['password']
 		loginpassword = password
 		print(password)
-
 	value = check_if_present(str("users"), user, loginpassword)
 	if value is 1:
 		return "Successfully Logged in "
@@ -59,7 +57,6 @@ def login():
 @cross_origin(origin='localhost',headers=['Content- Type','Authorization'])
 def get_similar():
 	if request.method == "GET":
-		# print(request.data)
 		result = retrieve(request.args.get('article_id'), request.args.get('category'))
 		for i in result:
 			if isinstance(i, unicode):

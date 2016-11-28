@@ -128,15 +128,45 @@
 	});
 	var SimpleSlider = React.createClass({
 	  displayName: 'SimpleSlider',
+	  loadSimilarArticleContent: function loadSimilarArticleContent(similarArticleArray) {
+	    var a = new Array(10);
+	    for (var i = 0; i < 10; i++) {
+	      var rawFile = new XMLHttpRequest();
+	      rawFile.open("GET", similarArticleArray[i], false);
+	      rawFile.onreadystatechange = function () {
+	        if (rawFile.readyState === 4) {
+	          if (rawFile.status === 200 || rawFile.status == 0) {
+	            a[i] = rawFile.responseText;
+	          }
+	        }
+	      }.bind(this);
+	      rawFile.send(null);
+	    }
+	    this.setState({ recommendedArticleText: a });
+	  },
+	  loadSimilarContent: function loadSimilarContent() {
+	    $.ajax({
+	      url: this.props.url2,
+	      dataType: 'json',
+	      type: 'PUT',
+	      data: this.state.data,
+	      success: function (data) {
+	        this.setState({ similarContent: data });
+	        this.loadSimilarArticleContent(this.state.similarContent);
+	      }.bind(this),
+	      error: function (xhr, status, err) {
+	        console.error(this.props.url2, status, err.toString());
+	      }.bind(this)
+	    });
+	  },
 	  loadSimilarFromServer: function loadSimilarFromServer() {
-	    console.log(this.props.urlSimilarity);
 	    $.ajax({
 	      url: this.props.urlSimilarity,
 	      dataType: 'text',
 	      data: { article_id: 2, category: 'national' },
 	      success: function (incomingData) {
-	        console.log(incomingData);
 	        this.setState({ data: incomingData });
+	        this.loadSimilarContent();
 	      }.bind(this),
 	      error: function (xhr, status, err) {
 	        console.error(this.props.url, status, err.toString());
@@ -144,7 +174,7 @@
 	    });
 	  },
 	  getInitialState: function getInitialState() {
-	    return { data: [] };
+	    return { data: [], similarContent: [], recommendedArticleText: [] };
 	  },
 	  componentDidMount: function componentDidMount() {
 	    this.loadSimilarFromServer();
@@ -387,7 +417,7 @@
 	      ),
 	      React.createElement(ContentCard, null),
 	      React.createElement(RecommendCard, { url: 'Other Recommendations' }),
-	      React.createElement(SimpleSlider, { urlSimilarity: 'http://localhost:5000/get_similar', pollInterval: '2000' }),
+	      React.createElement(SimpleSlider, { urlSimilarity: 'http://localhost:5000/get_similar', url2: 'retrieve', pollInterval: '2000' }),
 	      React.createElement(RecommendCard, { url: 'People Also Liked' }),
 	      React.createElement(SimpleSlider, null),
 	      React.createElement(DetailCard, null),
