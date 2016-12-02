@@ -1,3 +1,5 @@
+import ImageLoader from 'react-imageloader';
+
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Slider = require('react-slick');
@@ -74,6 +76,22 @@ var SimpleSlider = React.createClass({
       success: function(data) {
         this.setState({similarContent: data});
         this.loadSimilarArticleContent(this.state.similarContent)
+        this.loadSimilarImageUrl(this.state.similarContent)
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.error(this.props.url2, status, err.toString());
+      }.bind(this)
+    });
+  },
+  loadSimilarImageUrl(similarImageList) {
+    $.ajax({
+      url: this.props.url3,
+      dataType: 'json',
+      type: 'PUT',
+      data: this.state.data,
+      success: function(data) {
+        this.setState({imageUrlArray: data});
+        console.log(this.state.imageUrlArray)
       }.bind(this),
       error: function(xhr, status, err) {
         console.error(this.props.url2, status, err.toString());
@@ -95,7 +113,7 @@ var SimpleSlider = React.createClass({
     });
   },
   getInitialState() {
-    return {data:[], similarContent:[], recommendedArticleText:[]};
+    return {data:[], similarContent:[], recommendedArticleText:[], imageUrlArray:[]};
   },
   componentDidMount() {
     this.loadSimilarFromServer();
@@ -245,7 +263,7 @@ var Main = React.createClass({
       </div>
       <ContentCard/>
       <RecommendCard url="Other Recommendations"/>
-      <SimpleSlider urlSimilarity="http://localhost:5000/get_similar" url2="retrieve"pollInterval="2000"/>
+      <SimpleSlider urlSimilarity="http://localhost:5000/get_similar" url2="retrieve" url3="image" pollInterval="2000"/>
       <RecommendCard url="People Also Liked"/>
       <SimpleSlider/>
       <DetailCard/>

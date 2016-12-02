@@ -2,6 +2,7 @@ from flask import Flask,  redirect, url_for, request , render_template, jsonify
 from signup_login import insert_into_mongo, check_if_present
 from flask.ext.cors import CORS, cross_origin
 from retrieve_similarity import retrieve
+from summarizer import main_summarizer
 import json
 import unicodedata
 app = Flask(__name__)
@@ -57,11 +58,23 @@ def login():
 @cross_origin(origin='localhost',headers=['Content- Type','Authorization'])
 def get_similar():
 	if request.method == "GET":
+		print(request.data)
 		result = retrieve(request.args.get('article_id'), request.args.get('category'))
 		for i in result:
 			if isinstance(i, unicode):
 				i=unicodedata.normalize('NFKD', i).encode('ascii','ignore')
 		return jsonify(result['similar_to'])
+
+@app.route('/get_summary', methods = ['POST', 'GET'])
+@cross_origin(origin='localhost',headers=['Content- Type','Authorization'])
+def summarizer():
+	print(request.args.get('text'))
+	summary = main_summarizer(request.args.get('text'))
+
+	# for i in summary:
+	# 	if isinstance(i, unicode):
+	# 		i=unicodedata.normalize('NFKD', i).encode('ascii','ignore')
+	return summary
 
 if __name__ == '__main__':
    app.run(debug = True)

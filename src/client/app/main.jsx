@@ -1,5 +1,5 @@
 import InfiniteScroll from 'react-infinite-scroller';
-
+import ImageLoader from 'react-imageloader';
 var React = require('react');
 var ReactDOM = require('react-dom');
 var converter = new Showdown.converter();
@@ -31,7 +31,6 @@ var ArticleBox = React.createClass({
       });
   },
   handleContentSubmit:function(article) {
-    console.log(article)
     $.ajax({
       url: this.props.url2,
       dataType: 'json',
@@ -70,7 +69,7 @@ var ArticleBox = React.createClass({
 
 var Article = React.createClass({
   getInitialState() {
-    return {content : ""};
+    return {content : "", summary : ""};
   },
   handleUpvote(e) {
     e.preventDefault();
@@ -79,13 +78,27 @@ var Article = React.createClass({
     this.props.onContentSubmit({id:this.props.id, upvotes: upvotes, downvotes: downvotes});
     return;
   },
-
   handleDownvote(e) {
     e.preventDefault();
     var upvotes=this.props.upvotes;
     var downvotes=this.props.downvotes + 1;
     this.props.onContentSubmit({id:this.props.id, upvotes: upvotes, downvotes: downvotes});
     return;
+  },
+  getArticleSummary(articleText) {
+    //console.log(articleText)
+    $.ajax({
+      url: this.props.urlSummary,
+      dataType: 'text',
+      data: {text : articleText},
+      success: function(data) {
+        this.setState({summary: data});
+        console.log(this.state.summary)
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.error(this.props.url, status, err.toString());
+      }.bind(this)
+    });
   },
   loadArticleContent() {
     var rawFile = new XMLHttpRequest();
@@ -97,6 +110,8 @@ var Article = React.createClass({
             if(rawFile.status === 200 || rawFile.status == 0)
             {
                 this.setState({content : rawFile.responseText});
+                // console.log(this.state.content)
+                this.getArticleSummary(rawFile.responseText);
             }
         }
     }.bind(this)
@@ -104,18 +119,25 @@ var Article = React.createClass({
   },
   componentDidMount() {
     this.loadArticleContent();
+
   },
   render() {
-    var articleContent = this.state.content;
+    var articleContent = this.state.summary;
     var rawMarkup = converter.makeHtml(this.props.heading.toString());
     return (
       <section className="section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp">
-      <header className="section__play-btn mdl-cell mdl-cell--3-col-desktop mdl-cell--2-col-tablet mdl-cell--4-col-phone mdl-color--teal-100 mdl-color-text--white">
-      <i className="material-icons">play_circle_filled</i>
+      <header className="section__play-btn mdl-cell mdl-cell--3-col-desktop mdl-cell--2-col-tablet mdl-cell--4-col-phone mdl-color--teal-100 mdl-color-text--white" ref="image_container">
+      <ImageLoader
+      //src={this.props.image_url}
+      wrapper={React.DOM.div}
+      style={{height: '2em'},{width: '20em'}}
+      >
+      Image load failed!
+      </ImageLoader>
       </header>
       <div className="mdl-card mdl-cell mdl-cell--9-col-desktop mdl-cell--6-col-tablet mdl-cell--4-col-phone">
       <div className="mdl-card__supporting-text" id="supporting-text">
-      <h4 href={this.props.heading}>Article {this.props.id}</h4>
+      <h4 href={this.props.title}>{this.props.title}</h4>
       {articleContent}
       </div>
       <div className="mdl-card__actions" >
@@ -144,7 +166,7 @@ var ArticleList = React.createClass({
   render() {
     var articleNodes = this.props.data.map(function (article) {
       return (
-        <Article id={article.id} heading={article.url} text={article.path} upvotes={article.upvotes} downvotes={article.downvotes} onContentSubmit={this.callMaster}>
+        <Article urlSummary="http://localhost:5000/get_summary" id={article.id} title={article.title} heading={article.url} image_url={article.image_url} text={article.path} upvotes={article.upvotes} downvotes={article.downvotes} onContentSubmit={this.callMaster}>
         </Article>
       );
     },this);
