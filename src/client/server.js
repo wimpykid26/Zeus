@@ -5,6 +5,8 @@ var bodyParser = require('body-parser');
 var app = express();
 var jsonfile = require('jsonfile')
 var COMMENTS_FILE = path.join(__dirname, '/json/national.json');
+var COMMENTS_FILE2 = path.join(__dirname, '/json/world.json');
+var COMMENTS_FILE3 = path.join(__dirname, '/json/sports.json');
 console.log(__dirname)
 app.set('port', (process.env.PORT || 3000));
 
@@ -28,7 +30,24 @@ app.get('/json/national.json', function(req, res) {
     res.json(JSON.parse(data));
   });
 });
-
+app.get('/json/sports.json', function(req, res) {
+  fs.readFile(COMMENTS_FILE3, function(err, data) {
+    if (err) {
+      console.error(err);
+      process.exit(1);
+    }
+    res.json(JSON.parse(data));
+  });
+});
+app.get('/json/world.json', function(req, res) {
+  fs.readFile(COMMENTS_FILE2, function(err, data) {
+    if (err) {
+      console.error(err);
+      process.exit(1);
+    }
+    res.json(JSON.parse(data));
+  });
+});
 app.post('/json/national.json', function(req, res) {
   console.log('insidepost');
   fs.readFile(COMMENTS_FILE, function(err, data) {

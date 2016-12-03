@@ -9,8 +9,8 @@ client=MongoClient()
 db=client.mydb
 content=db.content
 id = 0
-for i in content.find({"category":"entertainment"}):
-	f = open('/home/mera_naam_dwaipayan/Dwaipayan/Zeus/src/client/json/' + 'national.json', 'a')
+for i in content.find({"category":"sports"}):
+	f = open('/home/mera_naam_dwaipayan/Dwaipayan/Zeus/src/client/json/' + 'sports.json', 'a')
 	print(i)
 	i['id'] = id
 	id = id + 1

@@ -68,12 +68,9 @@ def get_similar():
 @app.route('/get_summary', methods = ['POST', 'GET'])
 @cross_origin(origin='localhost',headers=['Content- Type','Authorization'])
 def summarizer():
+	print('asdasdasdasdasd')
 	print(request.args.get('text'))
 	summary = main_summarizer(request.args.get('text'))
-
-	# for i in summary:
-	# 	if isinstance(i, unicode):
-	# 		i=unicodedata.normalize('NFKD', i).encode('ascii','ignore')
 	return summary
 
 if __name__ == '__main__':
