@@ -6,7 +6,11 @@ var Slider = require('react-slick');
 
 var ContentCard = React.createClass({
   getInitialState() {
-    return {content : ""};
+    return {content : "", heading: ""};
+  },
+  getHeading() {
+    console.log("ASdasd"+document.cookie)
+    this.setState({heading : unescape(document.cookie)})
   },
   loadArticleContent() {
     var rawFile = new XMLHttpRequest();
@@ -18,6 +22,7 @@ var ContentCard = React.createClass({
             if(rawFile.status === 200 || rawFile.status == 0)
             {
                 this.setState({content : rawFile.responseText});
+                this.getHeading();
             }
         }
     }.bind(this)
@@ -33,7 +38,7 @@ var ContentCard = React.createClass({
       <div className="icon-and-title-flex">
       <img src="img/ic_launcher.png" className="appicon"></img>
       <div className="title-container">
-      <span className="text-title">asdhvasdb</span>
+      <span className="text-title">{this.state.heading}</span>
       <br></br><div className="intertext-padding"></div>
       <span className="text-subtitle">by Hindustan Times</span>
       <br></br><div className="intertext-padding"></div>

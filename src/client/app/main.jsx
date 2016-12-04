@@ -24,7 +24,7 @@ var ArticleBox = React.createClass({
     });
   },
   loadMore: function(article) {
-    console.log('load');
+    //console.log('load');
       $.ajax({
         url: this.props.url,
         dataType: 'json',
@@ -73,7 +73,51 @@ var ArticleBox = React.createClass({
     )
   }
 });
+class SearchForm extends React.Component{
+  constructor(props) {
+    super(props);
+    this.state = {value: '', result: ''};
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
 
+  handleChange(event) {
+    this.setState({value: event.target.value});
+  }
+
+  handleSubmit(event) {
+    //console.log(this.state.value)
+    this.loadSearchResults(this.state.value)
+    event.preventDefault();
+  }
+  loadSearchResults(query) {
+    console.log(query)
+    $.ajax({
+      url: this.props.urlsolr,
+      dataType: 'json',
+      data: {queryString: query},
+      success: function(incomingData) {
+        console.log(incomingData)
+        this.setState({result: incomingData});
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.error(this.props.url, status, err.toString());
+      }.bind(this)
+    });
+  }
+
+  render() {
+    return (
+      <form onSubmit={this.handleSubmit}>
+        <label>
+          Name:
+          <input type="text" value={this.state.value} onChange={this.handleChange} />
+        </label>
+        <input type="submit" value="Submit" />
+      </form>
+    );
+  }
+}
 var Article = React.createClass({
   getInitialState() {
     return {content : "", summary : ""};
@@ -92,6 +136,10 @@ var Article = React.createClass({
     this.props.onContentSubmit({id:this.props.id, upvotes: upvotes, downvotes: downvotes});
     return;
   },
+  handleClick(e) {
+    document.cookie = this.props.title;
+    window.location = "http://localhost:3000/individual.html"
+  },
   getArticleSummary(articleText) {
     //console.log(articleText)
     $.ajax({
@@ -100,7 +148,7 @@ var Article = React.createClass({
       data: {text : articleText},
       success: function(data) {
         this.setState({summary: data});
-        console.log(this.state.summary)
+        //console.log(data)
       }.bind(this),
       error: function(xhr, status, err) {
         console.error(this.props.url, status, err.toString());
@@ -109,6 +157,7 @@ var Article = React.createClass({
   },
   loadArticleContent() {
     var rawFile = new XMLHttpRequest();
+    //console.log(this.props.text)
     rawFile.open("GET", this.props.text, false);
     rawFile.onreadystatechange = function ()
     {
@@ -117,7 +166,7 @@ var Article = React.createClass({
             if(rawFile.status === 200 || rawFile.status == 0)
             {
                 this.setState({content : rawFile.responseText});
-                // console.log(this.state.content)
+                //console.log(this.state.content)
                 this.getArticleSummary(rawFile.responseText);
             }
         }
@@ -134,13 +183,7 @@ var Article = React.createClass({
     return (
       <section className="section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp">
       <header className="section__play-btn mdl-cell mdl-cell--3-col-desktop mdl-cell--2-col-tablet mdl-cell--4-col-phone mdl-color--teal-100 mdl-color-text--white" ref="image_container">
-      <ImageLoader
-      src={this.props.image_url}
-      wrapper={React.DOM.div}
-      style={{height: '2em'},{width: '20em'}}
-      >
-      Image load failed!
-      </ImageLoader>
+      <img src={this.props.image_url} data-src="holder.js/140x140" alt='Thumbnail'/>
       </header>
       <div className="mdl-card mdl-cell mdl-cell--9-col-desktop mdl-cell--6-col-tablet mdl-cell--4-col-phone">
       <div className="mdl-card__supporting-text" id="supporting-text">
@@ -148,7 +191,7 @@ var Article = React.createClass({
       {articleContent}
       </div>
       <div className="mdl-card__actions" >
-      <a href="http://localhost:3000/individual.html?id=1" className="mdl-button">Read whole Article</a>
+      <a onClick={this.handleClick} className="mdl-button">Read whole Article</a>
       <a href="#" className="mdl-button" onClick={this.handleUpvote} ref="upvote">Upvote:{this.props.upvotes}</a>
       <a href="#" className="mdl-button" onClick={this.handleDownvote}ref="downvote">Downvote:{this.props.downvotes}</a>
       </div>
@@ -195,6 +238,7 @@ var Header = React.createClass({
       <h3>Recommendation Portal</h3>
       </div>
       <div className="mdl-layout--large-screen-only mdl-layout__header-row">
+      <SearchForm urlsolr = "http://localhost:5000/get_solr" />
       </div>
       <div className="mdl-layout__tab-bar mdl-js-ripple-effect mdl-color--primary-dark">
       <a href="#overview" className="mdl-layout__tab is-active">Entertainment</a>
@@ -294,7 +338,7 @@ var MainComponent = React.createClass({
       <div className="mdl-layout__tab-panel" id="sports">
       <section className="section--center mdl-grid mdl-grid--no-spacing">
       <div className="mdl-cell mdl-cell--12-col">
-      <h4>World</h4>
+      <h4>Sports</h4>
       <ArticleBox url={this.props.url4} url2={this.props.url2} pollInterval="2000" category = "national"/>
       </div>
       </section>

@@ -3,6 +3,7 @@ from signup_login import insert_into_mongo, check_if_present
 from flask.ext.cors import CORS, cross_origin
 from retrieve_similarity import retrieve
 from summarizer import main_summarizer
+from search_solr import search
 import json
 import unicodedata
 app = Flask(__name__)
@@ -68,10 +69,17 @@ def get_similar():
 @app.route('/get_summary', methods = ['POST', 'GET'])
 @cross_origin(origin='localhost',headers=['Content- Type','Authorization'])
 def summarizer():
-	print('asdasdasdasdasd')
-	print(request.args.get('text'))
 	summary = main_summarizer(request.args.get('text'))
+	#print(summary)
 	return summary
+
+@app.route('/get_solr', methods = ['POST', 'GET'])
+@cross_origin(origin='localhost',headers=['Content- Type','Authorization'])
+def solarizer():
+	print(request.args.get('queryString'))
+	solr = search('title', request.args.get('queryString'))
+	print(solr.results)
+	return solr.results
 
 if __name__ == '__main__':
    app.run(debug = True)
