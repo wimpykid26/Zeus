@@ -22420,7 +22420,8 @@
 	    return;
 	  },
 	  handleClick: function handleClick(e) {
-	    document.cookie = this.props.title;
+	    document.cookie = this.props.title + '@' + this.props.id + '@' + this.props.image_url + '@' + this.props.text;
+	
 	    window.location = "http://localhost:3000/individual.html";
 	  },
 	  getArticleSummary: function getArticleSummary(articleText) {

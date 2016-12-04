@@ -72,26 +72,28 @@
 	var ContentCard = React.createClass({
 	  displayName: 'ContentCard',
 	  getInitialState: function getInitialState() {
-	    return { content: "", heading: "" };
+	    return { content: "", heading: "", imageUrl: "", path: "" };
 	  },
+	
 	  getHeading: function getHeading() {
-	    console.log("ASdasd" + document.cookie);
-	    this.setState({ heading: unescape(document.cookie) });
-	  },
-	  loadArticleContent: function loadArticleContent() {
+	    var values = document.cookie.substring(17).split('@');
+	    this.setState({ heading: values[0], imageUrl: values[2], path: values[3] });
 	    var rawFile = new XMLHttpRequest();
-	    rawFile.open("GET", "samples/zeus/national/1.txt", false);
+	    rawFile.open("GET", values[3], false);
 	    rawFile.onreadystatechange = function () {
 	      if (rawFile.readyState === 4) {
 	        if (rawFile.status === 200 || rawFile.status == 0) {
 	          this.setState({ content: rawFile.responseText });
-	          this.getHeading();
 	        }
 	      }
 	    }.bind(this);
 	    rawFile.send(null);
 	  },
-	  componentDidMount: function componentDidMount() {
+	
+	  loadArticleContent: function loadArticleContent() {
+	    this.getHeading();
+	  },
+	  componentWillMount: function componentWillMount() {
 	    this.loadArticleContent();
 	  },
 	  render: function render() {
@@ -102,7 +104,7 @@
 	      React.createElement(
 	        'div',
 	        { className: 'icon-and-title-flex' },
-	        React.createElement('img', { src: 'img/ic_launcher.png', className: 'appicon' }),
+	        React.createElement('img', { src: this.state.imageUrl, className: 'appicon' }),
 	        React.createElement(
 	          'div',
 	          { className: 'title-container' },

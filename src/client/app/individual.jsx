@@ -6,15 +6,13 @@ var Slider = require('react-slick');
 
 var ContentCard = React.createClass({
   getInitialState() {
-    return {content : "", heading: ""};
+    return {content : "", heading: "", imageUrl: "", path: ""};
   },
-  getHeading() {
-    console.log("ASdasd"+document.cookie)
-    this.setState({heading : unescape(document.cookie)})
-  },
-  loadArticleContent() {
+  getHeading : function() {
+    var values = document.cookie.substring(17).split('@');
+    this.setState({heading : values[0], imageUrl: values[2], path: values[3]});
     var rawFile = new XMLHttpRequest();
-    rawFile.open("GET", "samples/zeus/national/1.txt", false);
+    rawFile.open("GET", values[3], false);
     rawFile.onreadystatechange = function ()
     {
         if(rawFile.readyState === 4)
@@ -22,13 +20,18 @@ var ContentCard = React.createClass({
             if(rawFile.status === 200 || rawFile.status == 0)
             {
                 this.setState({content : rawFile.responseText});
-                this.getHeading();
             }
+
         }
     }.bind(this)
     rawFile.send(null);
   },
-  componentDidMount() {
+
+  loadArticleContent() {
+    this.getHeading();
+  },
+
+  componentWillMount() {
     this.loadArticleContent();
   },
   render(){
@@ -36,7 +39,7 @@ var ContentCard = React.createClass({
     return(
       <div className="wow fadeInUp content-card">
       <div className="icon-and-title-flex">
-      <img src="img/ic_launcher.png" className="appicon"></img>
+      <img src={this.state.imageUrl} className="appicon"></img>
       <div className="title-container">
       <span className="text-title">{this.state.heading}</span>
       <br></br><div className="intertext-padding"></div>
