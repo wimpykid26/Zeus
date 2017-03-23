@@ -1,4 +1,4 @@
-# H2 Zeus
+# h2 Zeus
 Zeus is a web-application that crawls news articles from various sources and shows the reader </br>
 filtered content across various categories. The recommendation algorithm takes into account </br>
 a mixture of user-user and item-item similarity to show only those content that the user may like. </br>
